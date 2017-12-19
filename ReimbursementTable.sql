@@ -8,7 +8,7 @@ CREATE TABLE Reimbursements (
   RequestApproval number(1, 0) default 0,
   Attachments BLOB default NULL,
   SupervisorApproval number(1,0) default 0,
-  SupervistorReason varchar(255) default NULL,
+  SupervisorReason varchar(255) default NULL,
   DateLastModified timestamp default NULL
 );
 

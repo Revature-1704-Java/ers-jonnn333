@@ -3,8 +3,6 @@ package com.revature.ERC;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Properties;
 
 
 // Serves as a factory. Also manages a single instance of the database connection.

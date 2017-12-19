@@ -1,8 +1,5 @@
 package com.revature.ERC;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 public class EmployeeAccess {
 
 	double reimbursementLimit = 0;

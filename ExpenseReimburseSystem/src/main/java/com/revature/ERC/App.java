@@ -19,6 +19,8 @@ import java.util.Scanner;
  		-[y...] DAO (JDBC)
  		-[] Manager view 
  		-[] JUnit
+ 		+++ [y] SQL script to create table(s)
+ 		*** don't yet have xp in display, so resorting to console print statements and scanner
  		
  	[y] Unrelated todo: 1-on-1 (4) tomorrow morning, 12/19!
  		- will be asked about past SQL projects
@@ -45,7 +47,7 @@ public class App {
     	EmployeeAccessDAO employee = new EmployeeAccessDAO();
     	
     	// Manager class
-    	// -----
+    	ManagerAccessDAO manager = new ManagerAccessDAO();
         
     	// test connection
     	ConnectionDAO db_connect = new ConnectionDAO();
@@ -69,6 +71,7 @@ public class App {
     	while (whileMarker == 1) {
     		
     		if (subsequent_round == 1) {
+    			//System.out.println("Attempt #" + counter);
     			
     			if (counter == 3 && ban == false) {
     				System.out.println("YOU HAVE BEEN BANNED");
@@ -93,16 +96,24 @@ public class App {
     		if (personType.equals("Employee") || personType.equals("employee")) {
     			
     			// do the Employee stuff
-    			System.out.println("Attempting to log in as an Employee...");
-    			whileMarker = 0;
+    			System.out.println("What is you EmployeeID?");
+    			String eid = scan.nextLine();
     			
-/*    			List<EmployeeAccess> EmpList = EmployeeAccessDAO.getAllEmployees();
-    			for (EmployeeAccess emp : EmpList) {
-    				System.out.println(emp.getFirstName() + " " + emp.getLastName());
+    			System.out.println("Attempting to log in as an Employee...");
+    			
+    			if (employee.isEmployee(eid) == true) {
+    				 EmployeeAccess temp = employee.getEmployee(eid);
+    				 System.out.println("Welcome, "+temp.getFirstName() + " " + temp.getLastName() + ".");
+    				 whileMarker = 0;
+    				 
+    				 System.out.println("Enter your reimbursement amount: ");
+    				 double amount = scan.nextDouble();
+    				 
     			}
-*/    			
-    			EmployeeAccess specify = employee.getEmployee("FPE97HUF");
-    			System.out.println("Welcome, "+specify.getFirstName() + " " + specify.getLastName() + ".");
+    			else {
+    				break;
+    			}
+    			
     		}
     		else if (personType.equals("Manager") || personType.equals("manager")) {
     			
@@ -110,6 +121,42 @@ public class App {
     			System.out.println("Attempting to log in as a Manager...");
     			whileMarker = 0;
     			
+    			System.out.println("You are currently in manager mode (currently all-access atm)");
+    			System.out.println("What would you like to do next?	");
+    			String managerAction = scan.nextLine();
+    			
+    			if (managerAction.equals("Reimbursements") || managerAction.equals("reimbursements")) {
+    				System.out.println("Enter employeeID of persion you'd like to approve: ");
+    				String enterID = scan.nextLine();
+    				if (employee.isEmployee(enterID) == true) {
+    					// do deposit
+    					
+    				}
+    				else {
+    					break;
+    				}
+    			}
+    			else {
+    				break;
+    			}
+    			
+    		}
+    		
+    		else if (personType.equals("allManagers") || personType.equals("allmanagers")) {
+    			List<ManagerAccess> ReimburseList = manager.getReimbursementTable();
+    			for (ManagerAccess reimburse : ReimburseList) {
+    				System.out.println("Employee with id = "+ reimburse.employeeID + " has limit of $" + reimburse.getReimbursementLimit());
+    			}
+    			whileMarker = 0;
+    		}
+    		
+    		else if (personType.equals("allEmployees") || personType.equals("allemployees")) {
+    			List<EmployeeAccess> employees = employee.getAllEmployees();
+    			for (EmployeeAccess emp : employees) {
+    				System.out.println("Employee with id: "+ emp.getEmployeeID() + ", whose name is: " + 
+    						emp.getFirstName() + " " + emp.getLastName());
+    			}
+    			whileMarker = 0;
     		}
     		else {
     			if (ban == false) {
@@ -120,6 +167,7 @@ public class App {
     		}
     		
     	}
+    	scan.close();
     	System.out.println("Thank you for using the ERS. Have a nice day.");
     	
     }

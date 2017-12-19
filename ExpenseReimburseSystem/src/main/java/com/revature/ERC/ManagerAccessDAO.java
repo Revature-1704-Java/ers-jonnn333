@@ -1,25 +1,24 @@
 package com.revature.ERC;
 
+import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.revature.beans.Bear;
-//import com.revature.util.ConnectionUtil;
+public class ManagerAccessDAO {
 
-public class EmployeeAccessDAO {
-
-	public List<EmployeeAccess> getAllEmployees() {
+	public List<ManagerAccess> getReimbursementTable() {
 		PreparedStatement ps = null;
-		EmployeeAccess EA = null;
-		List<EmployeeAccess> Employees = new ArrayList<>();
+		ManagerAccess MA = null;
+		List<ManagerAccess> Managers = new ArrayList<>();
 		
 		try(Connection conn = ConnectionDAO.getConnection()) {
-			String sql = "SELECT * FROM Employee";
+			String sql = "SELECT * FROM Reimbursements";
 			ps = conn.prepareStatement(sql);
 			//Add any variables to PS
 			ResultSet rs = ps.executeQuery();
@@ -34,11 +33,16 @@ public class EmployeeAccessDAO {
 				//bears.add(b);
 				
 				String id = rs.getString("EmployeeID");
-				String first = rs.getString("FirstName");
-				String last = rs.getString("LastName");
+				double reimburseLimit = rs.getDouble("ReimburseLimit");
+				int RequestApprove = rs.getInt("RequestApproval");
+				//InputStream hold_blob = new InputStream();
+				//hold_blob = rs.getBinaryStream("Attachments");
+				int SupApprove = rs.getInt("SupervisorApproval");
+				String SupReason = rs.getString("SupervisorReason");
+				Date lastDate = rs.getDate("DateLastModified");
 				
-				EA = new EmployeeAccess(id, first, last);
-				Employees.add(EA);
+				MA = new ManagerAccess(id, reimburseLimit, SupApprove);
+				Managers.add(MA);
 				
 			}
 			rs.close();
@@ -47,9 +51,10 @@ public class EmployeeAccessDAO {
 			ex.getMessage();
 		}
 		
-		return Employees;
+		return Managers;
 	}
 	
+	//////////////////////////////////////////////////////
 	public EmployeeAccess getEmployee(String req_id) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -99,54 +104,5 @@ public class EmployeeAccessDAO {
 		}
 		return EA;
 	}
-	
-	// ------ repurpose this function! :D -------
-	public boolean isEmployee(String eid) {
-		
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		EmployeeAccess EA = null;		
-		
-		try(Connection conn = ConnectionDAO.getConnection()) {
-			//String sql = "SELECT * FROM BEAR WHERE BEAR_ID = ?";
-			String sql = "SELECT * FROM Employee WHERE EmployeeID = ?";
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, eid);
-			
-			rs = ps.executeQuery();
-			
-			while (rs.next()) {
-				
-				String id = rs.getString("EmployeeID");
-				String first = rs.getString("FirstName");
-				String last = rs.getString("LastName");
-				
-				EA = new EmployeeAccess(id, first, last);
-				return true;
-				
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			if (ps != null) {
-				try {
-					ps.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		return false;
-	}
-
 	
 }
