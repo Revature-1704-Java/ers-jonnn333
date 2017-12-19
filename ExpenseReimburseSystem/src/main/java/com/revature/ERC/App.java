@@ -112,12 +112,15 @@ public class App {
     			System.out.println("You are currently in manager mode (currently all-access atm)");
     			System.out.println("What would you like to do next?	");
     			String managerAction = scan.nextLine();
+    			System.out.println("Enter the amount to request: ");
+    			double approveAmount = scan.nextDouble();
     			
     			if (managerAction.equals("Reimbursements") || managerAction.equals("reimbursements")) {
     				System.out.println("Enter employeeID of persion you'd like to approve: ");
     				String enterID = scan.nextLine();
     				if (employee.isEmployee(enterID) == true) {
     					// do reimbursement
+    					manager.approveRequest(enterID, approveAmount);
     					
     				}
     				else {
