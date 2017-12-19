@@ -1,6 +1,9 @@
 package com.revature.ERC;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Scanner;
 
 /*
  Expense Reimbursement System (ERS)
@@ -10,31 +13,114 @@ import java.sql.SQLException;
  	Due		: 12/19/17, 6pm EST
  	
  	Requirements:
- 		- Database with Employee, Reimbursements tables (generateData.com)
- 		- Employee login (basic JSP)
- 		- Reimbursement form submission (basic JSP)
- 		- DAO (JDBC)
- 		- Manager view 
- 		- JUnit
+ 		-[y] Database with Employee, Reimbursements tables (generateData.com)
+ 		-[] Employee login
+ 		-[] Reimbursement form submission 
+ 		-[y...] DAO (JDBC)
+ 		-[] Manager view 
+ 		-[] JUnit
  		
- 	Unrelated todo: 1-on-1 (4) tomorrow morning, 12/19!
+ 	[y] Unrelated todo: 1-on-1 (4) tomorrow morning, 12/19!
  		- will be asked about past SQL projects
  		- will be asked plan on this or project 1; looking for details when talking about it!
+ 		
+ 	+++ Project 1 
+ 		Can use bootstrap or your own custom css; call class and get whatever is contained in link that contains them
  
  */
 
 
 public class App {
+	
     public static void main( String[] args ) {
+    	
+    	int whileMarker = 1;
+    	int subsequent_round = 0;
+    	boolean ban = false;
+    	int counter = 0;
+    	int isEmployee = 0;
+    	int isManager = 0;
+    	
+    	// Employee class
+    	EmployeeAccessDAO employee = new EmployeeAccessDAO();
+    	
+    	// Manager class
+    	// -----
         
     	// test connection
     	ConnectionDAO db_connect = new ConnectionDAO();
     	
     	try {
 			db_connect.getConnection();
+			System.out.println("Okay, we're in.");
+			
 		} catch (SQLException e) {
 			System.out.println("Connection unsuccessful :( ");
 			e.printStackTrace();
 		}
+    	// end of code block for test connection
+    	
+    	System.out.println("Welcome to the Employee Reimbursement System!");
+    	System.out.println("Are you an Employee or Manager?");
+    	
+    	Scanner scan = null; 
+    	String personType = "no";
+    	
+    	while (whileMarker == 1) {
+    		
+    		if (subsequent_round == 1) {
+    			
+    			if (counter == 3 && ban == false) {
+    				System.out.println("YOU HAVE BEEN BANNED");
+    				whileMarker = 0;
+    				ban = true;
+    			}
+    			else {
+    				System.out.println("Once again, are you an Employee or Manager?");
+    			}
+    		}
+    		
+    		try {
+    			if (ban == false) {
+    				scan = new Scanner(System.in);
+    				personType = scan.nextLine();
+    			}
+        		
+        	} catch (Exception ex) {
+        		ex.printStackTrace();
+        	}
+    		
+    		if (personType.equals("Employee") || personType.equals("employee")) {
+    			
+    			// do the Employee stuff
+    			System.out.println("Attempting to log in as an Employee...");
+    			whileMarker = 0;
+    			
+/*    			List<EmployeeAccess> EmpList = EmployeeAccessDAO.getAllEmployees();
+    			for (EmployeeAccess emp : EmpList) {
+    				System.out.println(emp.getFirstName() + " " + emp.getLastName());
+    			}
+*/    			
+    			EmployeeAccess specify = employee.getEmployee("FPE97HUF");
+    			System.out.println("Welcome, "+specify.getFirstName() + " " + specify.getLastName() + ".");
+    		}
+    		else if (personType.equals("Manager") || personType.equals("manager")) {
+    			
+    			// do Manager stuff
+    			System.out.println("Attempting to log in as a Manager...");
+    			whileMarker = 0;
+    			
+    		}
+    		else {
+    			if (ban == false) {
+    				System.out.println("Not valid input.");
+    			}
+    			subsequent_round = 1;
+    			counter++;
+    		}
+    		
+    	}
+    	System.out.println("Thank you for using the ERS. Have a nice day.");
+    	
     }
 }

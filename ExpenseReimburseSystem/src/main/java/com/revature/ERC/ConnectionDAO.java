@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 
 
 // Serves as a factory. Also manages a single instance of the database connection.
@@ -11,7 +12,7 @@ import java.util.List;
 public class ConnectionDAO {
 
 	private static final String CONNECTION_USERNAME = "ercDemo";
-	private static final String CONNECTION_PASSWORD = "some_p4ssw0rd";
+	private static final String CONNECTION_PASSWORD = "p4ssw0rd";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 	
 	/*
