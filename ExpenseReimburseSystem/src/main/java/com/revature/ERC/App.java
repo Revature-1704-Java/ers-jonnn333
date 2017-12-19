@@ -14,15 +14,15 @@ import java.util.Scanner;
  	
  	Requirements:
  		-[y] Database with Employee, Reimbursements tables (generateData.com)
- 		-[] Employee login
- 		-[] Reimbursement form submission 
- 		-[y...] DAO (JDBC)
- 		-[] Manager view 
- 		-[] JUnit
- 		+++ [y] SQL script to create table(s)
+ 		-[y] Employee login
+ 		-[y] Reimbursement form submission 
+ 		-[y] DAO (JDBC)
+ 		-[y] Manager view 
+ 		-[y] JUnit
+ 		+[y] SQL script to create table(s)
  		*** don't yet have xp in display, so resorting to console print statements and scanner
  		
- 	[y] Unrelated todo: 1-on-1 (4) tomorrow morning, 12/19!
+ 	[y] Unrelated todo: 1-on-1 tomorrow morning, 12/19!
  		- will be asked about past SQL projects
  		- will be asked plan on this or project 1; looking for details when talking about it!
  		
@@ -48,19 +48,6 @@ public class App {
     	
     	// Manager class
     	ManagerAccessDAO manager = new ManagerAccessDAO();
-        
-    	// test connection
-    	ConnectionDAO db_connect = new ConnectionDAO();
-    	
-    	try {
-			db_connect.getConnection();
-			System.out.println("Okay, we're in.");
-			
-		} catch (SQLException e) {
-			System.out.println("Connection unsuccessful :( ");
-			e.printStackTrace();
-		}
-    	// end of code block for test connection
     	
     	System.out.println("Welcome to the Employee Reimbursement System!");
     	System.out.println("Are you an Employee or Manager?");
@@ -108,6 +95,7 @@ public class App {
     				 
     				 System.out.println("Enter your reimbursement amount: ");
     				 double amount = scan.nextDouble();
+    				 manager.flagRequest(eid);
     				 
     			}
     			else {
@@ -129,7 +117,7 @@ public class App {
     				System.out.println("Enter employeeID of persion you'd like to approve: ");
     				String enterID = scan.nextLine();
     				if (employee.isEmployee(enterID) == true) {
-    					// do deposit
+    					// do reimbursement
     					
     				}
     				else {

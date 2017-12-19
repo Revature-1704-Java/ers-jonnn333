@@ -54,14 +54,15 @@ public class ManagerAccessDAO {
 		return Managers;
 	}
 	
-	//////////////////////////////////////////////////////
-	public EmployeeAccess getEmployee(String req_id) {
+	/////////////////////////////////////////////////////////
+	public boolean requestApproval(String req_id, double amount) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		EmployeeAccess EA = null;
 		try(Connection conn = ConnectionDAO.getConnection()) {
 			//String sql = "SELECT * FROM BEAR WHERE BEAR_ID = ?";
-			String sql = "SELECT * FROM Employee WHERE EmployeeID = ?";
+			String sql = "SELECT ReimburseLimit FROM Employee, Reimbursements WHERE EmployeeID.Employee = ? AND "
+					+ "EmployeeID.Employee = EmployeeID.Reimbursements ";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, req_id);
 			
@@ -75,11 +76,17 @@ public class ManagerAccessDAO {
 				
 				//b = new Bear(bid, name, age, weight);
 				
-				String id = rs.getString("EmployeeID");
-				String first = rs.getString("FirstName");
-				String last = rs.getString("LastName");
+				//String id = rs.getString("EmployeeID");
+				//String first = rs.getString("FirstName");
+				//String last = rs.getString("LastName");
 				
-				EA = new EmployeeAccess(id, first, last);
+				//EA = new EmployeeAccess(id, first, last);
+				
+				double limit = rs.getDouble("ReimburseLimit");
+				if (amount < limit) {
+					
+					return true;
+				}
 				
 			}
 		} catch (Exception ex) {
@@ -102,7 +109,53 @@ public class ManagerAccessDAO {
 				}
 			}
 		}
-		return EA;
+		return false;
+	}
+
+	
+	public void flagRequest(String eid) {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		EmployeeAccess EA = null;
+		try(Connection conn = ConnectionDAO.getConnection()) {
+			//String sql = "SELECT * FROM BEAR WHERE BEAR_ID = ?";
+			
+			String sql = "ALTER Reimbursements SET RequestApproval = 1 WHERE EmployeeID = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, eid);
+			rs = ps.executeQuery();
+		} catch (Exception ex) {
+			
+		}
 	}
 	
+	public void approveRequest(String eid, double amount) {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		EmployeeAccess EA = null;
+		try(Connection conn = ConnectionDAO.getConnection()) {
+			//String sql = "SELECT * FROM BEAR WHERE BEAR_ID = ?";
+			
+			String pre_sql = "SELECT ReimburseLimit FROM Reimbursements WHERE EmployeeID = ?";
+			String sql = "ALTER Reimbursements SET ReimburseLimit = ? WHERE EmployeeID = ?";
+			
+			ps = conn.prepareStatement(pre_sql);
+			ps.setString(1, eid);
+			rs = ps.executeQuery();
+			double currLimit = rs.getDouble("ReimburseLimit");
+			currLimit -= amount;
+			
+			ps = conn.prepareStatement(sql);
+			ps.setDouble(1, currLimit);
+			ps.setString(2, eid);
+			rs = ps.executeQuery();
+			
+			
+			
+		} catch (Exception ex) {
+			
+		}
+	}
 }
